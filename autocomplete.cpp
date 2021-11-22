@@ -5,7 +5,7 @@
 */
 
 #include "TrieNode.h"
-#include "trie.h"
+#include "Trie.h"
 
 int getNumber(std::ifstream& s) { 
     return 0;

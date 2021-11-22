@@ -1,4 +1,4 @@
-﻿#include "trie.h"
+﻿#include "Trie.h"
 
 /**
 * Constructor
