@@ -18,11 +18,9 @@
 class Trie {
 
     private:
-        // the root of the trie tree.
         TrieNode* root;
 
     public:
-
         Trie();
         Trie(std::string filename);
         void deserialise(TrieNode* node, std::ifstream& s);

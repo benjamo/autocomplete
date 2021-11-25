@@ -1,7 +1,7 @@
 #include "TrieNode.h"
 
 /**
-* simple constructor for class
+* Simple constructor for class
 * 
 */
 TrieNode::TrieNode() { 
@@ -9,8 +9,11 @@ TrieNode::TrieNode() {
 }
 
 /**
-* adds a link for a letter in current node
-*
+* Adds a link for a letter in current node
+* 
+* @param char letter
+* 
+* @return TrieNode*
 */
 TrieNode* TrieNode::setChild(char letter) {
     TrieNode* newNode = new TrieNode();
@@ -19,7 +22,7 @@ TrieNode* TrieNode::setChild(char letter) {
 }
 
 /**
-* sets EndOfWord variable depending upon
+* Sets EndOfWord variable depending upon
 * if current node is end of word or not.
 * 
 * @param bool value
@@ -40,8 +43,12 @@ bool TrieNode::getEndOfWord() {
 }
 
 /**
-* returns the node associated to the letter
+* Returns the node associated to the letter
 * returns nullptr if no such letter exists
+* 
+* @param char letter
+* 
+* @return TrieNode*
 */
 TrieNode* TrieNode::getChild(char letter) {
 
@@ -54,8 +61,12 @@ TrieNode* TrieNode::getChild(char letter) {
 }
 
 /**
-* removing the corresponding child node
+* Removing the corresponding child node
 * of current node.
+* 
+* @param char letter
+* 
+* @return void
 */ 
 void TrieNode::removeChild(char letter) {
     delete children[letter];
@@ -63,8 +74,10 @@ void TrieNode::removeChild(char letter) {
 }
 
 /**
-* returns true if current node
+* Returns true if current node
 * has any children
+* 
+* @return bool
 */
 bool TrieNode::hasChildren() {
 
@@ -76,8 +89,10 @@ bool TrieNode::hasChildren() {
 }
 
 /**
-* gets all the letters that are the children
-*  of current node.
+* Gets all the letters that are the children
+* of current node.
+* 
+* @return std::vector<char>
 */
 std::vector<char> TrieNode::getChildrenKeys() {
 
@@ -91,9 +106,19 @@ std::vector<char> TrieNode::getChildrenKeys() {
 }
 
 /**
-* gets the number of children
+* Gets the number of children
 * of current node.
+* 
+* @return int
 */
 int TrieNode::getNumOfChildren() { 
     return children.size(); 
+}
+
+
+/**
+* Destructor
+*
+*/
+TrieNode::~TrieNode() {
 }

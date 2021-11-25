@@ -1,4 +1,5 @@
 ﻿#include "Trie.h"
+#include <stdexcept>
 
 /**
 * Constructor
@@ -7,7 +8,6 @@
 */
 Trie::Trie() {
 
-    std::cout << "Creating new Trie object\n";
     root = new TrieNode();
     root->setEndOfWord(false);
 
@@ -22,14 +22,13 @@ Trie::Trie() {
 */
 Trie::Trie(std::string filename) {
 
-    std::cout << "Creating new Trie object\n";
     root = new TrieNode();
     root->setEndOfWord(false);
 
     std::ifstream trieFile(filename);
 
     if (!trieFile.is_open()) {
-        std::cout << "No deserialisation occured as filename doesnt exist.\n";
+        throw std::runtime_error("No deserialisation occured as filename doesnt exist.");
     } else {
         deserialise(root, trieFile);
     }
@@ -45,7 +44,7 @@ Trie::Trie(std::string filename) {
 * @return void
 */
 Trie::~Trie() { 
-    std::cout << "Deleting current Trie object\n"; 
+    delete root;
 }
 
 /**
@@ -72,16 +71,22 @@ void Trie::deserialise(TrieNode* node, std::ifstream& s) {
     }
 
     // get number of children
-    getline(s, curWord, ' ');
+
+    if (!getline(s, curWord, ' ')) {
+        throw "File is empty.";
+    };
+
     numChildren = stoi(curWord);
 
     int index = 0;
 
     while (index < numChildren) {
+
         getline(s, curWord, ' ');
         node->setChild(curWord[0]);
         deserialise(node->getChild(curWord[0]), s);
         index++;
+
     }
 
 }
@@ -104,6 +109,7 @@ void Trie::insertWord(std::string word) {
     // looking through nodes,if not present
     // creting new ones.
     while (index < wordLength) {
+
         char curLetter = word[index];
         TrieNode* childNode = curNode->getChild(curLetter);
 
@@ -115,7 +121,7 @@ void Trie::insertWord(std::string word) {
         index++;
     }
 
-    // setting EOW=True for cuurent node
+    // setting endOfWord=True for cuurent node
     // to denote end of word
     curNode->setEndOfWord(true);
 }
@@ -147,9 +153,10 @@ bool Trie::loadWords(std::string filename) {
     std::ifstream wordFile(filename);
 
     if (!wordFile.is_open()) {
-        std::cout << "Couldnt load words file\n";
+        throw std::runtime_error("Could not open file");
         return false;
     } else {
+
         std::vector<std::string> wordList;
         std::string word;
 
@@ -161,6 +168,7 @@ bool Trie::loadWords(std::string filename) {
         insertWordList(wordList);
         return true;
     }
+
 }
 
 /**
@@ -220,11 +228,12 @@ void Trie::deleteWord(std::string word) {
     int wordLength = word.length();
 
     while (index < wordLength) {
+
         nodeStack.push(curNode);
         childNode = curNode->getChild(word[index]);
 
         if (childNode == nullptr) {
-            std::cout << "No such word exixts\n";
+            throw std::runtime_error("No such word exixts");
             return;
         }
 
@@ -241,18 +250,19 @@ void Trie::deleteWord(std::string word) {
     // if last node has children,
     // then we cant delete any node.
     if (!curNode->hasChildren()) {
+
         int index = 0;
 
         while (!nodeStack.empty()) {
+
             curNode = nodeStack.top();
             nodeStack.pop();
 
-            std::cout << "deleting letter....\n"
-                << word[wordLength - index - 1] << std::endl;
+            std::cout << "deleting letter....\n" << word[wordLength - index - 1] << std::endl;
             curNode->removeChild(word[wordLength - index - 1]);
             index++;
 
-            // if that node has EOW==true or hasChildren>0
+            // if that node has endOfWord==true or hasChildren>0
             // then other we cant delete nodes anymore.
             // as haschildren>0 means other nodes are linked to it.
             // and EOW==true means this node is end of word for some word
@@ -288,9 +298,10 @@ void Trie::getSuggestions(std::string word) {
         childNode = curNode->getChild(word[index]);
 
         if (childNode == nullptr) {
-            std::cout << "No suggestions available" << std::endl;
+            throw std::runtime_error("No suggestions found");
             return;
         }
+
         index++;
         curNode = childNode;
 
@@ -422,15 +433,12 @@ void Trie::serialiseTrie() {
     trieFile.open("myTrie.txt", std::ios::out | std::ios::trunc);
 
     if (!trieFile) {
-        std::cout << "File creation failed!.\n";
+        throw std::runtime_error("File could not be created");
     } else {
-        std::cout << "File creation successfull!.\n";
 
         serialiseTrieHelper(root, trieFile);
-
         trieFile.close();
 
-        std::cout << "The tRie is serialised and stored in myTrie.txt\n";
     }
 
 }
